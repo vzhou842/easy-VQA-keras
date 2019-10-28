@@ -30,13 +30,15 @@ num_answers = len(all_answers)
 print(f'Found {num_answers} total answers.')
 
 
-print('\n--- Reading training images...')
+print('\n--- Reading/processing training images...')
+def normalize_img(im):
+  return im / 255 - 0.5
 def read_images(dir):
   ims = {}
   for filename in os.listdir(dir):
     if filename.endswith('.png'):
       image_id = int(filename[:-4])
-      ims[image_id] = img_to_array(load_img(os.path.join(dir, filename)))
+      ims[image_id] = normalize_img(img_to_array(load_img(os.path.join(dir, filename))))
   return ims
 train_ims = read_images('data/train/images')
 test_ims = read_images('data/test/images')
@@ -60,7 +62,7 @@ train_X_seqs = text_to_seq(train_qs)
 test_X_seqs = text_to_seq(test_qs)
 
 
-print('\n--- Creating model inputs images...')
+print('\n--- Creating model input images...')
 train_X_ims = [train_ims[id] for id in train_image_ids]
 test_X_ims = [test_ims[id] for id in test_image_ids]
 
@@ -79,8 +81,9 @@ model = build_model(im_shape, vocab_size, num_answers)
 
 print('\n--- Training model...')
 model.fit(
-  [np.array(train_X_ims), np.array(train_X_seqs)],
+  [train_X_ims, train_X_seqs],
   train_Y,
+  validation_data=([test_X_ims, test_X_seqs], test_Y),
   batch_size=16,
   shuffle=True,
   epochs=20,
