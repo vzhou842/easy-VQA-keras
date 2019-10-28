@@ -1,5 +1,6 @@
 from keras.models import Model
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, Flatten, Embedding, LSTM, Dropout, Multiply
+from keras.optimizers import Adam
 from constants import *
 
 def build_model(im_shape, vocab_size, num_answers):
@@ -13,7 +14,7 @@ def build_model(im_shape, vocab_size, num_answers):
 
   # The RNN
   q_input = Input(shape=(MAX_QUESTION_LEN,))
-  x2 = Embedding(vocab_size, 32)(q_input)
+  x2 = Embedding(vocab_size + 1, 64)(q_input)
   x2 = LSTM(32)(x2)
   x2 = Dense(64, activation='tanh')(x2)
 
@@ -22,6 +23,6 @@ def build_model(im_shape, vocab_size, num_answers):
   out = Dense(num_answers, activation='softmax')(out)
 
   model = Model(inputs=[im_input, q_input], outputs=out)
-  model.compile('adam', loss='categorical_crossentropy', metrics=['accuracy'])
+  model.compile(Adam(lr=0.01), loss='categorical_crossentropy', metrics=['accuracy'])
 
   return model

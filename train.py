@@ -1,10 +1,12 @@
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.image import load_img, img_to_array
 from keras.preprocessing.sequence import pad_sequences
+from keras.utils import to_categorical
 import json
 import os
 from model import build_model
 from constants import *
+import numpy as np
 
 
 print('\n--- Reading questions...')
@@ -30,10 +32,11 @@ print(f'Found {num_answers} total answers.')
 
 print('\n--- Reading training images...')
 def read_images(dir):
-  ims = []
+  ims = {}
   for filename in os.listdir(dir):
     if filename.endswith('.png'):
-      ims.append(img_to_array(load_img(os.path.join(dir, filename))))
+      image_id = int(filename[:-4])
+      ims[image_id] = img_to_array(load_img(os.path.join(dir, filename)))
   return ims
 train_ims = read_images('data/train/images')
 test_ims = read_images('data/test/images')
@@ -43,9 +46,8 @@ print(f'Each image has shape {im_shape}.')
 
 
 print('\n--- Fitting question tokenizer...')
-texts = list(map(lambda q: q[0], all_qs))
 tokenizer = Tokenizer()
-tokenizer.fit_on_texts(texts)
+tokenizer.fit_on_texts(all_qs)
 vocab_size = len(tokenizer.word_index)
 print(f'Found {vocab_size} words total.')
 
@@ -53,10 +55,33 @@ print(f'Found {vocab_size} words total.')
 print('\n--- Converting questions to token sequences...')
 def text_to_seq(texts):
   seqs = tokenizer.texts_to_sequences(texts)
-  seqs = pad_sequences(seqs, maxlen=MAX_QUESTION_LEN)
-train_seqs = text_to_seq(train_qs)
-test_seqs = text_to_seq(test_qs)
+  return pad_sequences(seqs, maxlen=MAX_QUESTION_LEN)
+train_X_seqs = text_to_seq(train_qs)
+test_X_seqs = text_to_seq(test_qs)
+
+
+print('\n--- Creating model inputs images...')
+train_X_ims = [train_ims[id] for id in train_image_ids]
+test_X_ims = [test_ims[id] for id in test_image_ids]
+
+
+print('\n--- Creating model outputs...')
+train_answer_indices = [all_answers.index(a) for a in train_answers]
+test_answer_indices = [all_answers.index(a) for a in test_answers]
+train_Y = to_categorical(train_answer_indices)
+test_Y = to_categorical(test_answer_indices)
+print(f'Example model output: {train_Y[0]}')
 
 
 print('\n--- Building model...')
 model = build_model(im_shape, vocab_size, num_answers)
+
+
+print('\n--- Training model...')
+model.fit(
+  [np.array(train_X_ims), np.array(train_X_seqs)],
+  train_Y,
+  batch_size=16,
+  shuffle=True,
+  epochs=20,
+)
