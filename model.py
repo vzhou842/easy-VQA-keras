@@ -1,5 +1,5 @@
 from keras.models import Model
-from keras.layers import Input, Dense, Conv2D, MaxPooling2D, Flatten, Embedding, LSTM, Dropout, Multiply
+from keras.layers import Input, Dense, Conv2D, MaxPooling2D, Flatten, Multiply
 from keras.optimizers import Adam
 from constants import *
 
@@ -12,11 +12,9 @@ def build_model(im_shape, vocab_size, num_answers):
   x1 = Flatten()(x1)
   x1 = Dense(32, activation='tanh')(x1)
 
-  # The RNN
-  q_input = Input(shape=(MAX_QUESTION_LEN,))
-  x2 = Embedding(vocab_size + 1, 64)(q_input)
-  x2 = LSTM(32, return_sequences=True)(x2)
-  x2 = LSTM(32)(x2)
+  # The question network
+  q_input = Input(shape=(vocab_size,))
+  x2 = Dense(32, activation='tanh')(q_input)
   x2 = Dense(32, activation='tanh')(x2)
 
   # Merge -> output

@@ -1,6 +1,5 @@
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.image import load_img, img_to_array
-from keras.preprocessing.sequence import pad_sequences
 from keras.utils import to_categorical
 import json
 import os
@@ -54,12 +53,18 @@ vocab_size = len(tokenizer.word_index)
 print(f'Found {vocab_size} words total.')
 
 
-print('\n--- Converting questions to token sequences...')
-def text_to_seq(texts):
+print('\n--- Converting questions to bags of words...')
+def seq_to_bow(seq):
+  bow = np.zeros(vocab_size)
+  for i in range(vocab_size):
+    bow[i] = seq.count(i + 1)
+  return bow
+def texts_to_bows(texts):
   seqs = tokenizer.texts_to_sequences(texts)
-  return pad_sequences(seqs, maxlen=MAX_QUESTION_LEN)
-train_X_seqs = text_to_seq(train_qs)
-test_X_seqs = text_to_seq(test_qs)
+  return [seq_to_bow(seq) for seq in seqs]
+train_X_seqs = texts_to_bows(train_qs)
+test_X_seqs = texts_to_bows(test_qs)
+print(f'Example question bag of words: {train_X_seqs[0]}')
 
 
 print('\n--- Creating model input images...')
