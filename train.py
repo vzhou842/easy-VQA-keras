@@ -3,6 +3,7 @@ from keras.preprocessing.image import load_img, img_to_array
 from keras.preprocessing.sequence import pad_sequences
 import json
 import os
+from model import build_model
 from constants import *
 
 
@@ -55,3 +56,7 @@ def text_to_seq(texts):
   seqs = pad_sequences(seqs, maxlen=MAX_QUESTION_LEN)
 train_seqs = text_to_seq(train_qs)
 test_seqs = text_to_seq(test_qs)
+
+
+print('\n--- Building model...')
+model = build_model(im_shape, vocab_size, num_answers)
