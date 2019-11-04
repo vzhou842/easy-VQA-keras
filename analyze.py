@@ -86,11 +86,18 @@ model = build_model(im_shape, vocab_size, num_answers)
 
 model.load_weights('model_weights')
 predictions = model.predict([train_X_ims, train_X_seqs])
-for idx in range(num_answers):
-	pred_values = predictions[:, idx]
-	answer = all_answers[idx]
-	print(f'\nStatistics for answer {idx}, answer {answer}')
-	min = np.amin(pred_values)
-	max = np.amax(pred_values)
-	mean = np.mean(pred_values)
-	print(f'\nMin: {min}, Max: {max}, Mean: {mean}')
+
+# for idx in range(num_answers):
+# 	pred_values = predictions[:, idx]
+# 	answer = all_answers[idx]
+# 	print(f'\nStatistics for answer {idx}, answer {answer}')
+# 	min = np.amin(pred_values)
+# 	max = np.amax(pred_values)
+# 	mean = np.mean(pred_values)
+# 	print(f'\nMin: {min}, Max: {max}, Mean: {mean}')
+
+for idx in range(len(train_answer_indices)):
+	# answer numbers for triangle, circle, rectangle
+	answer = train_answer_indices[idx]
+	if answer == 5 or answer == 9 or answer == 12:
+		print(f"Answer {answer}, predictions {predictions[idx][5]}, {predictions[idx][9]}, {predictions[idx][12]}")
