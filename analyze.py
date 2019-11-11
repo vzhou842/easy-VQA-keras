@@ -85,7 +85,7 @@ print('\n--- Building model...')
 model = build_model(im_shape, vocab_size, num_answers)
 
 model.load_weights('model_weights')
-predictions = model.predict([train_X_ims, train_X_seqs])
+predictions = model.predict([test_X_ims, test_X_seqs])
 
 # for idx in range(num_answers):
 # 	pred_values = predictions[:, idx]
@@ -96,8 +96,25 @@ predictions = model.predict([train_X_ims, train_X_seqs])
 # 	mean = np.mean(pred_values)
 # 	print(f'\nMin: {min}, Max: {max}, Mean: {mean}')
 
-for idx in range(len(train_answer_indices)):
-	# answer numbers for triangle, circle, rectangle
-	answer = train_answer_indices[idx]
-	if answer == 5 or answer == 9 or answer == 12:
-		print(f"Answer {answer}, predictions {predictions[idx][5]}, {predictions[idx][9]}, {predictions[idx][12]}")
+shapes = [5, 9, 12]
+yesno = [3, 6]
+def return_class(answer):
+  if answer in shapes:
+    return 0
+  if answer in yesno:
+    return 1
+  return 2
+error_matrix = [[0 for _ in range(3)] for _ in range(3)]
+total_errors = 0
+
+for idx in range(len(test_answer_indices)):
+  # answer numbers for triangle, circle, rectangle
+  answer = test_answer_indices[idx]
+  pred = np.argmax(predictions[idx])
+  if not answer == pred:
+    total_errors += 1
+    error_matrix[return_class(answer)][return_class(pred)] += 1
+
+print('total error: {}'.format(total_errors / len(test_answer_indices)))
+for i in range(3):
+  print('{}\t{}\t{}\n'.format(error_matrix[i][0] / total_errors, error_matrix[i][1] / total_errors, error_matrix[i][2]/ total_errors))
