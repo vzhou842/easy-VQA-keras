@@ -2,16 +2,12 @@ from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.image import load_img, img_to_array
 from keras.utils import to_categorical
-import argparse
 import json
 import os
 from model import build_model
 from constants import *
 import numpy as np
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--full-model', action='store_true')
-args = parser.parse_args()
 
 print('\n--- Reading questions...')
 def read_questions(path):
@@ -86,24 +82,39 @@ print(f'Example model output: {train_Y[0]}')
 
 
 print('\n--- Building model...')
-model = build_model(im_shape, vocab_size, num_answers, args.full_model)
+model = build_model(im_shape, vocab_size, num_answers)
 
-checkpoint = ModelCheckpoint('./model_weights',
-  monitor='val_loss',
-  verbose=0,
-  save_best_only=False,
-  save_weights_only=False,
-  mode='auto',
-  period=1)
-callbacks_list = [checkpoint]
+model.load_weights('model_weights')
+predictions = model.predict([test_X_ims, test_X_seqs])
 
-print('\n--- Training model...')
-model.fit(
-  [train_X_ims, train_X_seqs],
-  train_Y,
-  validation_data=([test_X_ims, test_X_seqs], test_Y),
-  batch_size=16,
-  shuffle=True,
-  epochs=(200 if args.full_model else 80),
-  callbacks=callbacks_list
-)
+# for idx in range(num_answers):
+# 	pred_values = predictions[:, idx]
+# 	answer = all_answers[idx]
+# 	print(f'\nStatistics for answer {idx}, answer {answer}')
+# 	min = np.amin(pred_values)
+# 	max = np.amax(pred_values)
+# 	mean = np.mean(pred_values)
+# 	print(f'\nMin: {min}, Max: {max}, Mean: {mean}')
+
+shapes = [5, 9, 12]
+yesno = [3, 6]
+def return_class(answer):
+  if answer in shapes:
+    return 0
+  if answer in yesno:
+    return 1
+  return 2
+error_matrix = [[0 for _ in range(3)] for _ in range(3)]
+total_errors = 0
+
+for idx in range(len(test_answer_indices)):
+  # answer numbers for triangle, circle, rectangle
+  answer = test_answer_indices[idx]
+  pred = np.argmax(predictions[idx])
+  if not answer == pred:
+    total_errors += 1
+    error_matrix[return_class(answer)][return_class(pred)] += 1
+
+print('total error: {}'.format(total_errors / len(test_answer_indices)))
+for i in range(3):
+  print('{}\t{}\t{}\n'.format(error_matrix[i][0] / total_errors, error_matrix[i][1] / total_errors, error_matrix[i][2]/ total_errors))

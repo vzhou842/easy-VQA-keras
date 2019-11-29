@@ -3,16 +3,20 @@ from keras.layers import Input, Dense, Conv2D, MaxPooling2D, Flatten, Multiply
 from keras.optimizers import Adam
 from constants import *
 
-def build_model(im_shape, vocab_size, num_answers):
+def build_model(im_shape, vocab_size, num_answers, full_model=False):
   # The CNN
   im_input = Input(shape=im_shape)
-  x1 = Conv2D(8, 3, padding='same')(im_input)
+  x1 = Conv2D(32, 3, padding='same')(im_input)
   x1 = MaxPooling2D()(x1)
-  x1 = Conv2D(8, 3, padding='same')(im_input)
+  x1 = Conv2D(32, 3, padding='same')(x1)
+  x1 = MaxPooling2D()(x1)
+  if full_model:
+    x1 = Conv2D(32, 3, padding='same')(x1)
+    x1 = MaxPooling2D()(x1)
   x1 = Flatten()(x1)
   x1 = Dense(32, activation='tanh')(x1)
 
-  # The question network
+  #The question network
   q_input = Input(shape=(vocab_size,))
   x2 = Dense(32, activation='tanh')(q_input)
   x2 = Dense(32, activation='tanh')(x2)
