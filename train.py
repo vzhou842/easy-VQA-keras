@@ -2,12 +2,16 @@ from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.image import load_img, img_to_array
 from keras.utils import to_categorical
+import argparse
 import json
 import os
 from model import build_model
 from constants import *
 import numpy as np
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--full-model', action='store_true')
+args = parser.parse_args()
 
 print('\n--- Reading questions...')
 def read_questions(path):
@@ -82,8 +86,7 @@ print(f'Example model output: {train_Y[0]}')
 
 
 print('\n--- Building model...')
-model = build_model(im_shape, vocab_size, num_answers)
-
+model = build_model(im_shape, vocab_size, num_answers, args.full_model)
 
 checkpoint = ModelCheckpoint('./model_weights',
   monitor='val_loss',
@@ -101,6 +104,6 @@ model.fit(
   validation_data=([test_X_ims, test_X_seqs], test_Y),
   batch_size=16,
   shuffle=True,
-  epochs=80,
+  epochs=(200 if args.full_model else 80),
   callbacks=callbacks_list
 )
