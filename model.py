@@ -20,11 +20,9 @@ def build_model(im_shape, vocab_size, num_answers):
 
   # Merge -> output
   out = Multiply()([x1, x2])
-  #out = x1
   out = Dense(num_answers, activation='softmax')(out)
 
   model = Model(inputs=[im_input, q_input], outputs=out)
-  #model = Model(inputs=[im_input], outputs=out)
   model.compile(Adam(lr=0.00005), loss='categorical_crossentropy', metrics=['accuracy'])
 
   return model

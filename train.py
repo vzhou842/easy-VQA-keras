@@ -10,21 +10,12 @@ import numpy as np
 
 
 print('\n--- Reading questions...')
-# classes = ['brown', 'red', 'gray', 'blue', 'teal', 'green', 'black', 'yellow']
 def read_questions(path):
   with open(path, 'r') as file:
     qs = json.load(file)
   texts = [q[0] for q in qs]
   answers = [q[1] for q in qs]
   image_ids = [q[2] for q in qs]
-  # texts = []
-  # answers = []
-  # image_ids = []
-  # for q in qs:
-  #   if q[1] in classes:
-  #     texts.append(q[0])
-  #     answers.append(q[1])
-  #     image_ids.append(q[2])
   return (texts, answers, image_ids)
 train_qs, train_answers, train_image_ids = read_questions('data/train/questions.json')
 test_qs, test_answers, test_image_ids = read_questions('data/test/questions.json')
@@ -35,8 +26,6 @@ print(f'Read {len(train_qs)} training questions and {len(test_qs)} testing quest
 print('\n--- Reading answers...')
 with open('data/answers.txt', 'r') as file:
   all_answers = [a.strip() for a in file]
-# print(classes)
-# all_answers = classes
 num_answers = len(all_answers)
 print(f'Found {num_answers} total answers.')
 
