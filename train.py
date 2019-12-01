@@ -12,6 +12,7 @@ import numpy as np
 parser = argparse.ArgumentParser()
 parser.add_argument('--full-model', action='store_true')
 args = parser.parse_args()
+print('\n--- Calling train with full_model: {}'.format(args.full_model))
 
 print('\n--- Reading questions...')
 def read_questions(path):
@@ -56,6 +57,7 @@ tokenizer = Tokenizer()
 tokenizer.fit_on_texts(all_qs)
 vocab_size = len(tokenizer.word_index)
 print(f'Found {vocab_size} words total.')
+print('Printing out word index:{}'.format(tokenizer.word_index))
 
 
 print('\n--- Converting questions to bags of words...')

@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.0.0/dist/tf.min.js"></script>
+    <script src="inference.js"></script>
+  </head>
+  <body>
+    <canvas id="myCanvas" class="canvas" width="128" height="128"></canvas>
+    <canvas id="smallCanvas" class="small-canvas" width="64" height="64"></canvas>
+    <div>
+      Enter name: <input type="text">
+      <button onclick="onSubmit()">Submit</button>
+    </div>
+    <script>
+      var canvas = document.getElementById('myCanvas');
+      var context = canvas.getContext('2d');
+      var centerX = canvas.width / 2;
+      var centerY = canvas.height / 2;
+      var radius = 30;
+
+      context.beginPath();
+      context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = 'red';
+      context.fill();
+      context.lineWidth = 1;
+      context.strokeStyle = '#FFFFFF';
+      context.stroke();
+    </script>
+  </body>
+</html>
