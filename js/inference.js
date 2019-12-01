@@ -36,7 +36,8 @@ function getInference(imageData, questionBOW) {
     questionTensor = questionTensor.expandDims(0);
     let output = model.predict([imageTensor, questionTensor]);
     let finalIdx = output.argMax(1).arraySync();
-    console.log(answers[finalIdx[0]]);
+
+    document.getElementById("answer").innerHTML = answers[finalIdx[0]];
   })
   .catch(err => console.log(err));
 }
@@ -46,7 +47,8 @@ function onSubmit() {
   let canvas = document.getElementById('myCanvas');
   const ctx = canvas.getContext('2d');
   let smallCanvas = scaleImageData(canvas);
-  questionBOW = getBagOfWords("What color is the shape?");
+  let question = document.getElementById('questionInput').value;
+  questionBOW = getBagOfWords(question);
   console.log('bow: ', questionBOW);
   getInference(smallCanvas, questionBOW);
 }

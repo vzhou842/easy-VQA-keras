@@ -8,9 +8,10 @@
     <canvas id="myCanvas" class="canvas" width="128" height="128"></canvas>
     <canvas id="smallCanvas" class="small-canvas" width="64" height="64"></canvas>
     <div>
-      Enter name: <input type="text">
+      Enter question: <input id="questionInput" type="text">
       <button onclick="onSubmit()">Submit</button>
     </div>
+    <div id="answer"></div>
     <script>
       var canvas = document.getElementById('myCanvas');
       var context = canvas.getContext('2d');
