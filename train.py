@@ -2,29 +2,24 @@ from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.image import load_img, img_to_array
 from keras.utils import to_categorical
+import argparse
 import json
 import os
 from model import build_model
 from constants import *
 import numpy as np
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--full-model', action='store_true')
+args = parser.parse_args()
 
 print('\n--- Reading questions...')
-# classes = ['brown', 'red', 'gray', 'blue', 'teal', 'green', 'black', 'yellow']
 def read_questions(path):
   with open(path, 'r') as file:
     qs = json.load(file)
   texts = [q[0] for q in qs]
   answers = [q[1] for q in qs]
   image_ids = [q[2] for q in qs]
-  # texts = []
-  # answers = []
-  # image_ids = []
-  # for q in qs:
-  #   if q[1] in classes:
-  #     texts.append(q[0])
-  #     answers.append(q[1])
-  #     image_ids.append(q[2])
   return (texts, answers, image_ids)
 train_qs, train_answers, train_image_ids = read_questions('data/train/questions.json')
 test_qs, test_answers, test_image_ids = read_questions('data/test/questions.json')
@@ -35,8 +30,6 @@ print(f'Read {len(train_qs)} training questions and {len(test_qs)} testing quest
 print('\n--- Reading answers...')
 with open('data/answers.txt', 'r') as file:
   all_answers = [a.strip() for a in file]
-# print(classes)
-# all_answers = classes
 num_answers = len(all_answers)
 print(f'Found {num_answers} total answers.')
 
@@ -93,8 +86,7 @@ print(f'Example model output: {train_Y[0]}')
 
 
 print('\n--- Building model...')
-model = build_model(im_shape, vocab_size, num_answers)
-
+model = build_model(im_shape, vocab_size, num_answers, args.full_model)
 
 checkpoint = ModelCheckpoint('./model_weights',
   monitor='val_loss',
@@ -112,6 +104,6 @@ model.fit(
   validation_data=([test_X_ims, test_X_seqs], test_Y),
   batch_size=16,
   shuffle=True,
-  epochs=200,
+  epochs=(200 if args.full_model else 80),
   callbacks=callbacks_list
 )
