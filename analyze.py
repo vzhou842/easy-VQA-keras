@@ -82,9 +82,9 @@ print(f'Example model output: {train_Y[0]}')
 
 
 print('\n--- Building model...')
-model = build_model(im_shape, vocab_size, num_answers)
+model = build_model(im_shape, vocab_size, num_answers, True)
 
-model.load_weights('model_weights')
+model.load_weights('model_weights_85_newdata')
 predictions = model.predict([test_X_ims, test_X_seqs])
 
 # for idx in range(num_answers):
@@ -96,8 +96,14 @@ predictions = model.predict([test_X_ims, test_X_seqs])
 # 	mean = np.mean(pred_values)
 # 	print(f'\nMin: {min}, Max: {max}, Mean: {mean}')
 
-shapes = [5, 9, 12]
-yesno = [3, 6]
+shapes = []
+yesno = []
+for i in range(num_answers):
+  if (all_answers[i] == 'rectangle' or all_answers[i] == 'circle' or all_answers[i] == 'triangle'):
+    shapes.append(i)
+  elif all_answers[i] == 'yes' or all_answers[i] == 'no':
+    yesno.append(i)
+
 def return_class(answer):
   if answer in shapes:
     return 0
@@ -107,6 +113,9 @@ def return_class(answer):
 error_matrix = [[0 for _ in range(3)] for _ in range(3)]
 total_errors = 0
 
+color_error_matrix = [[0 for _ in range(num_answers)] for _ in range(num_answers)]
+questions_wrong = {}
+
 for idx in range(len(test_answer_indices)):
   # answer numbers for triangle, circle, rectangle
   answer = test_answer_indices[idx]
@@ -114,7 +123,23 @@ for idx in range(len(test_answer_indices)):
   if not answer == pred:
     total_errors += 1
     error_matrix[return_class(answer)][return_class(pred)] += 1
+    color_error_matrix[answer][pred] += 1
+    if (return_class(answer) == 1 and return_class(pred) == 1):
+      if test_qs[idx] in questions_wrong:
+        questions_wrong[test_qs[idx]] += 1
+      else:
+        questions_wrong[test_qs[idx]] = 1
 
 print('total error: {}'.format(total_errors / len(test_answer_indices)))
+print('Indexes are, in order, shapes, yes/no, colors')
+print('Rows are class of prediction, columns are class of answer')
 for i in range(3):
   print('{}\t{}\t{}\n'.format(error_matrix[i][0] / total_errors, error_matrix[i][1] / total_errors, error_matrix[i][2]/ total_errors))
+print('-------------')
+for i in range(num_answers):
+  to_print = ''
+  for j in range(num_answers):
+    to_print += str(color_error_matrix[i][j]) + '\t'
+  print(to_print)
+print('-------------')
+print(questions_wrong)
