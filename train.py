@@ -55,22 +55,15 @@ print(f'Each image has shape {im_shape}.')
 print('\n--- Fitting question tokenizer...')
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(all_qs)
-vocab_size = len(tokenizer.word_index)
-print(f'Found {vocab_size} words total.')
-print('Printing out word index:{}'.format(tokenizer.word_index))
+
+# We add one because the Keras Tokenizer reserves index 0 and never uses it.
+vocab_size = len(tokenizer.word_index) + 1
+print(f'Vocab Size: {vocab_size}')
 
 
 print('\n--- Converting questions to bags of words...')
-def seq_to_bow(seq):
-  bow = np.zeros(vocab_size)
-  for i in range(vocab_size):
-    bow[i] = seq.count(i + 1)
-  return bow
-def texts_to_bows(texts):
-  seqs = tokenizer.texts_to_sequences(texts)
-  return [seq_to_bow(seq) for seq in seqs]
-train_X_seqs = texts_to_bows(train_qs)
-test_X_seqs = texts_to_bows(test_qs)
+train_X_seqs = tokenizer.texts_to_matrix(train_qs)
+test_X_seqs = tokenizer.texts_to_matrix(test_qs)
 print(f'Example question bag of words: {train_X_seqs[0]}')
 
 
@@ -97,7 +90,7 @@ checkpoint = ModelCheckpoint('./model_weights',
   save_weights_only=False,
   mode='auto',
   period=1)
-callbacks_list = [checkpoint]
+
 
 print('\n--- Training model...')
 model.fit(
@@ -107,5 +100,5 @@ model.fit(
   batch_size=16,
   shuffle=True,
   epochs=(200 if args.full_model else 80),
-  callbacks=callbacks_list
+  callbacks=[checkpoint]
 )
