@@ -108,3 +108,6 @@ venv.bak/
 
 # Macs
 .DS_Store
+
+# Custom
+model.h5
