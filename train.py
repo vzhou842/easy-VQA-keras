@@ -32,7 +32,8 @@ print('\n--- Reading answers...')
 with open('data/answers.txt', 'r') as file:
   all_answers = [a.strip() for a in file]
 num_answers = len(all_answers)
-print(f'Found {num_answers} total answers.')
+print(f'Found {num_answers} total answers:')
+print(all_answers)
 
 
 print('\n--- Reading/processing training images...')
@@ -59,6 +60,7 @@ tokenizer.fit_on_texts(all_qs)
 # We add one because the Keras Tokenizer reserves index 0 and never uses it.
 vocab_size = len(tokenizer.word_index) + 1
 print(f'Vocab Size: {vocab_size}')
+print(tokenizer.word_index)
 
 
 print('\n--- Converting questions to bags of words...')
@@ -82,14 +84,7 @@ print(f'Example model output: {train_Y[0]}')
 
 print('\n--- Building model...')
 model = build_model(im_shape, vocab_size, num_answers, args.full_model)
-
-checkpoint = ModelCheckpoint('./model_weights',
-  monitor='val_loss',
-  verbose=0,
-  save_best_only=False,
-  save_weights_only=False,
-  mode='auto',
-  period=1)
+checkpoint = ModelCheckpoint('model.h5', save_best_only=True)
 
 
 print('\n--- Training model...')
