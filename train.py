@@ -94,6 +94,6 @@ model.fit(
   validation_data=([test_X_ims, test_X_seqs], test_Y),
   batch_size=16,
   shuffle=True,
-  epochs=(200 if args.full_model else 80),
+  epochs=(200 if args.full_model else 5),
   callbacks=[checkpoint]
 )
