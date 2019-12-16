@@ -20,6 +20,8 @@ def build_model(im_shape, vocab_size, num_answers, full_model=False):
   q_input = Input(shape=(vocab_size,))
   x2 = Dense(32, activation='tanh')(q_input)
   x2 = Dense(32, activation='tanh')(x2)
+  if full_model:
+    x2 = Dense(32, activation='tanh')(x2)
 
   # Merge -> output
   out = Multiply()([x1, x2])

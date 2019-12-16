@@ -2,12 +2,19 @@ from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.image import load_img, img_to_array
 from keras.utils import to_categorical
+import argparse
 import json
 import os
 from model import build_model
 from constants import *
 import numpy as np
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--full-model', action='store_true')
+parser.add_argument('--model-weights', help='model weights file')
+args = parser.parse_args()
+print('\n--- Calling train with full_model: {}'.format(args.full_model))
+print('\n--- Model weights file: {}'.format(args.model_weights))
 
 print('\n--- Reading questions...')
 def read_questions(path):
@@ -50,21 +57,14 @@ print(f'Each image has shape {im_shape}.')
 print('\n--- Fitting question tokenizer...')
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(all_qs)
-vocab_size = len(tokenizer.word_index)
-print(f'Found {vocab_size} words total.')
+vocab_size = len(tokenizer.word_index) + 1
+print(f'Vocab Size: {vocab_size}')
+print(tokenizer.word_index)
 
 
 print('\n--- Converting questions to bags of words...')
-def seq_to_bow(seq):
-  bow = np.zeros(vocab_size)
-  for i in range(vocab_size):
-    bow[i] = seq.count(i + 1)
-  return bow
-def texts_to_bows(texts):
-  seqs = tokenizer.texts_to_sequences(texts)
-  return [seq_to_bow(seq) for seq in seqs]
-train_X_seqs = texts_to_bows(train_qs)
-test_X_seqs = texts_to_bows(test_qs)
+train_X_seqs = tokenizer.texts_to_matrix(train_qs)
+test_X_seqs = tokenizer.texts_to_matrix(test_qs)
 print(f'Example question bag of words: {train_X_seqs[0]}')
 
 
@@ -82,9 +82,9 @@ print(f'Example model output: {train_Y[0]}')
 
 
 print('\n--- Building model...')
-model = build_model(im_shape, vocab_size, num_answers, True)
+model = build_model(im_shape, vocab_size, num_answers, args.full_model)
 
-model.load_weights('model_weights_85_newdata')
+model.load_weights(args.model_weights)
 predictions = model.predict([test_X_ims, test_X_seqs])
 
 # for idx in range(num_answers):
@@ -132,7 +132,7 @@ for idx in range(len(test_answer_indices)):
 
 print('total error: {}'.format(total_errors / len(test_answer_indices)))
 print('Indexes are, in order, shapes, yes/no, colors')
-print('Rows are class of prediction, columns are class of answer')
+print('Rows are class of answer, columns are class of prediction')
 for i in range(3):
   print('{}\t{}\t{}\n'.format(error_matrix[i][0] / total_errors, error_matrix[i][1] / total_errors, error_matrix[i][2]/ total_errors))
 print('-------------')
