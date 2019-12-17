@@ -4,6 +4,7 @@ from keras.preprocessing.image import load_img, img_to_array
 from keras.utils import to_categorical
 import argparse
 import json
+import math
 import os
 from model import build_model
 from constants import *
@@ -104,7 +105,7 @@ def dataset_generator(images, seqs, ys, batch_size):
              ys[idx * batch_size:max_index])
 
 print('\n--- Training model...')
-batch_size = 64
+batch_size = 16
 model.fit_generator(
   dataset_generator(train_X_ims, train_X_seqs, train_Y, batch_size),
   steps_per_epoch=math.ceil(len(train_X_ims) / batch_size),
