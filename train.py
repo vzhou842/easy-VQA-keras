@@ -109,7 +109,7 @@ batch_size = 16
 model.fit_generator(
   dataset_generator(train_X_ims, train_X_seqs, train_Y, batch_size),
   steps_per_epoch=math.ceil(len(train_X_ims) / batch_size),
-  epochs=(200 if args.full_model else 5),
+  epochs=(50 if args.full_model else 5),
   callbacks=[checkpoint],
   validation_data=dataset_generator(test_X_ims, test_X_seqs, test_Y, batch_size),
   validation_steps=math.ceil(len(test_X_ims) / batch_size)
