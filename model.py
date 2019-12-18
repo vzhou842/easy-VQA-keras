@@ -25,6 +25,8 @@ def build_model(im_shape, vocab_size, num_answers, full_model=False):
 
   # Merge -> output
   out = Multiply()([x1, x2])
+  if full_model:
+    out = Dense(32, activation='tanh')(out)
   out = Dense(num_answers, activation='softmax')(out)
 
   model = Model(inputs=[im_input, q_input], outputs=out)
