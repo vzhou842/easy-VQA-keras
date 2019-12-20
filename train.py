@@ -87,30 +87,14 @@ print('\n--- Building model...')
 model = build_model(im_shape, vocab_size, num_answers, args.full_model)
 checkpoint = ModelCheckpoint('model.h5', save_best_only=True)
 
-def dataset_generator(images, seqs, ys, batch_size):
-  if not len(images) == len(seqs) and not len(images) == len(ys):
-    raise Exception("Image, sequence, and answer arrays must be the same length")
-  images = np.array(images)
-  seqs = np.array(seqs)
-  ys = np.array(ys)
-  while True:
-    indices = np.arange(images.shape[0])
-    np.random.shuffle(indices)
-    images = images[indices]
-    seqs = seqs[indices]
-    ys = ys[indices]
-    for idx in range(math.ceil(len(images) / batch_size)):
-      max_index = min((idx + 1) * batch_size, len(images))
-      yield ([images[idx * batch_size:max_index], seqs[idx * batch_size:max_index]],
-             ys[idx * batch_size:max_index])
 
 print('\n--- Training model...')
-batch_size = 16
-model.fit_generator(
-  dataset_generator(train_X_ims, train_X_seqs, train_Y, batch_size),
-  steps_per_epoch=math.ceil(len(train_X_ims) / batch_size),
-  epochs=(50 if args.full_model else 5),
+model.fit(
+  [train_X_ims, train_X_seqs],
+  train_Y,
+  validation_data=([test_X_ims, test_X_seqs], test_Y),
+  batch_size=16,
+  shuffle=True,
+  epochs=(200 if args.full_model else 5),
   callbacks=[checkpoint],
-  validation_data=dataset_generator(test_X_ims, test_X_seqs, test_Y, batch_size),
-  validation_steps=math.ceil(len(test_X_ims) / batch_size)
 )
