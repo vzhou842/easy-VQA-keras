@@ -1,7 +1,6 @@
 from keras.models import Model
 from keras.layers import Input, Dense, Conv2D, MaxPooling2D, Flatten, Multiply
 from keras.optimizers import Adam
-from constants import *
 
 def build_model(im_shape, vocab_size, num_answers):
   # The CNN

@@ -5,7 +5,6 @@ from keras.utils import to_categorical
 import json
 import os
 from model import build_model
-from constants import *
 import numpy as np
 
 print('\n--- Reading questions...')
