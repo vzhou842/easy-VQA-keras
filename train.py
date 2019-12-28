@@ -6,41 +6,33 @@ import json
 import os
 from model import build_model
 import numpy as np
+from easy_vqa import get_train_questions, get_test_questions, get_train_image_paths, get_test_image_paths, get_answers
 
 print('\n--- Reading questions...')
-def read_questions(path):
-  with open(path, 'r') as file:
-    qs = json.load(file)
-  texts = [q[0] for q in qs]
-  answers = [q[1] for q in qs]
-  image_ids = [q[2] for q in qs]
-  return (texts, answers, image_ids)
-train_qs, train_answers, train_image_ids = read_questions('data/train/questions.json')
-test_qs, test_answers, test_image_ids = read_questions('data/test/questions.json')
+train_qs, train_answers, train_image_ids = get_train_questions()
+test_qs, test_answers, test_image_ids = get_test_questions()
 all_qs = train_qs + test_qs
 print(f'Read {len(train_qs)} training questions and {len(test_qs)} testing questions.')
 
 
 print('\n--- Reading answers...')
-with open('data/answers.txt', 'r') as file:
-  all_answers = [a.strip() for a in file]
+all_answers = get_answers()
 num_answers = len(all_answers)
 print(f'Found {num_answers} total answers:')
 print(all_answers)
 
 
 print('\n--- Reading/processing training images...')
-def normalize_img(im):
+def load_and_proccess_image(image_path):
+  im = img_to_array(load_img(image_path))
   return im / 255 - 0.5
-def read_images(dir):
+def read_images(paths):
   ims = {}
-  for filename in os.listdir(dir):
-    if filename.endswith('.png'):
-      image_id = int(filename[:-4])
-      ims[image_id] = normalize_img(img_to_array(load_img(os.path.join(dir, filename))))
+  for image_id, image_path in paths.items():
+    ims[image_id] = load_and_proccess_image(image_path)
   return ims
-train_ims = read_images('data/train/images')
-test_ims = read_images('data/test/images')
+train_ims = read_images(get_train_image_paths())
+test_ims = read_images(get_test_image_paths())
 im_shape = train_ims[0].shape
 print(f'Read {len(train_ims)} training images and {len(test_ims)} testing images.')
 print(f'Each image has shape {im_shape}.')
