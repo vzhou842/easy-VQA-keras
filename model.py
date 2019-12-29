@@ -7,8 +7,7 @@ def build_model(im_shape, vocab_size, num_answers):
   im_input = Input(shape=im_shape)
   x1 = Conv2D(8, 3, padding='same')(im_input)
   x1 = MaxPooling2D()(x1)
-  # x1 = Conv2D(8, 3, padding='same')(x1)
-  # x1 = MaxPooling2D()(x1)
+  # Test adding more conv layers:
   # x1 = Conv2D(8, 3, padding='same')(x1)
   # x1 = MaxPooling2D()(x1)
   x1 = Flatten()(x1)
