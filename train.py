@@ -11,7 +11,6 @@ from easy_vqa import get_train_questions, get_test_questions, get_train_image_pa
 print('\n--- Reading questions...')
 train_qs, train_answers, train_image_ids = get_train_questions()
 test_qs, test_answers, test_image_ids = get_test_questions()
-all_qs = train_qs + test_qs
 print(f'Read {len(train_qs)} training questions and {len(test_qs)} testing questions.')
 
 
@@ -40,7 +39,7 @@ print(f'Each image has shape {im_shape}.')
 
 print('\n--- Fitting question tokenizer...')
 tokenizer = Tokenizer()
-tokenizer.fit_on_texts(all_qs)
+tokenizer.fit_on_texts(train_qs)
 
 # We add one because the Keras Tokenizer reserves index 0 and never uses it.
 vocab_size = len(tokenizer.word_index) + 1
