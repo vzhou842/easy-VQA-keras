@@ -1,7 +1,7 @@
 absl-py==0.8.1
 argparse==1.4.0
 astor==0.8.0
-easy-vqa==1.0.0
+easy-vqa==1.0b1
 gast==0.2.2
 google-pasta==0.1.7
 grpcio==1.24.3
