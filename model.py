@@ -24,6 +24,6 @@ def build_model(im_shape, vocab_size, num_answers):
   out = Dense(num_answers, activation='softmax')(out)
 
   model = Model(inputs=[im_input, q_input], outputs=out)
-  model.compile(Adam(lr=2e-4), loss='categorical_crossentropy', metrics=['accuracy'])
+  model.compile(Adam(lr=5e-4), loss='categorical_crossentropy', metrics=['accuracy'])
 
   return model
