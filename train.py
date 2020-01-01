@@ -21,15 +21,20 @@ print(f'Found {num_answers} total answers:')
 print(all_answers)
 
 
-print('\n--- Reading/processing training images...')
+print('\n--- Reading/processing images...')
 def load_and_proccess_image(image_path):
+  # Load image, then scale and shift pixel values to [-0.5, 0.5]
   im = img_to_array(load_img(image_path))
   return im / 255 - 0.5
+
 def read_images(paths):
+  # paths is a dict mapping image ID to image path
+  # Returns a dict mapping image ID to the processed image
   ims = {}
   for image_id, image_path in paths.items():
     ims[image_id] = load_and_proccess_image(image_path)
   return ims
+
 train_ims = read_images(get_train_image_paths())
 test_ims = read_images(get_test_image_paths())
 im_shape = train_ims[0].shape
