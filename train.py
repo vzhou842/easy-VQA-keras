@@ -7,7 +7,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--big-model', action='store_true', help='Use the bigger model with more conv layers')
 parser.add_argument('--use-data-dir', action='store_true', help='Use custom data directory, at /data')
 args = parser.parse_args()
-print(f'\n--- Using big model: {args.big_model}, using data directory: {args.use_data_dir}')
+
+if args.big_model:
+  print('Using big model')
+if args.use_data_dir:
+  print('Using data directory')
 
 train_X_ims, train_X_seqs, train_Y, test_X_ims, test_X_seqs, test_Y, im_shape, vocab_size, num_answers, _, _, _ = setup(args.use_data_dir)
 
