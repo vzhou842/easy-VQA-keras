@@ -49,8 +49,16 @@ def setup(use_data_dir):
     return ims
 
   if use_data_dir:
-    train_ims = read_images(os.listdir('data/train/images'))
-    test_ims  = read_images(os.listdir('data/test/images'))
+    def extract_paths(dir):
+      paths = {}
+      for filename in os.listdir(dir):
+        if filename.endswith('.png'):
+          image_id = int(filename[:-4])
+          paths[image_id] = os.path.join(dir, filename)
+      return paths
+
+    train_ims = read_images(extract_paths('data/train/images'))
+    test_ims  = read_images(extract_paths('data/test/images'))
   else:
     train_ims = read_images(get_train_image_paths())
     test_ims = read_images(get_test_image_paths())
