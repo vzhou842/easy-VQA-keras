@@ -5,7 +5,7 @@ from prepare_data import setup
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--big-model', action='store_true')
-parser.add_argument('--model-weights', help='model weights file')
+parser.add_argument('--model-weights', help='model weights file', default='model.h5')
 parser.add_argument('--use-data-dir', action='store_true', help='Use custom data directory, at /data')
 args = parser.parse_args()
 print('\n--- Calling train with big_model: {}'.format(args.big_model))
