@@ -2,20 +2,42 @@ from keras.callbacks import ModelCheckpoint
 from keras.preprocessing.text import Tokenizer
 from keras.preprocessing.image import load_img, img_to_array
 from keras.utils import to_categorical
+import argparse
 import json
 import os
 from model import build_model
 import numpy as np
 from easy_vqa import get_train_questions, get_test_questions, get_train_image_paths, get_test_image_paths, get_answers
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--big-model', action='store_true', help='Use the bigger model with more conv layers')
+parser.add_argument('--use-data-dir', action='store_true', help='Use custom data directory, at /data')
+args = parser.parse_args()
+print(f'\n--- Using big model: {args.big_model}, using data directory: {args.use_data_dir}')
+
 print('\n--- Reading questions...')
-train_qs, train_answers, train_image_ids = get_train_questions()
-test_qs, test_answers, test_image_ids = get_test_questions()
+if args.use_data_dir:
+  def read_questions(path):
+    with open(path, 'r') as file:
+      qs = json.load(file)
+    texts = [q[0] for q in qs]
+    answers = [q[1] for q in qs]
+    image_ids = [q[2] for q in qs]
+    return (texts, answers, image_ids)
+  train_qs, train_answers, train_image_ids = read_questions('data/train/questions.json')
+  test_qs, test_answers, test_image_ids = read_questions('data/test/questions.json')
+else:
+  train_qs, train_answers, train_image_ids = get_train_questions()
+  test_qs, test_answers, test_image_ids = get_test_questions()
 print(f'Read {len(train_qs)} training questions and {len(test_qs)} testing questions.')
 
 
 print('\n--- Reading answers...')
-all_answers = get_answers()
+if args.use_data_dir:
+  with open('data/answers.txt', 'r') as file:
+    all_answers = [a.strip() for a in file]
+else:
+  all_answers = get_answers()
 num_answers = len(all_answers)
 print(f'Found {num_answers} total answers:')
 print(all_answers)
@@ -35,8 +57,12 @@ def read_images(paths):
     ims[image_id] = load_and_proccess_image(image_path)
   return ims
 
-train_ims = read_images(get_train_image_paths())
-test_ims = read_images(get_test_image_paths())
+if args.use_data_dir:
+  train_ims = read_images(os.listdir('data/train/images'))
+  test_ims  = read_images(os.listdir('data/test/images'))
+else:
+  train_ims = read_images(get_train_image_paths())
+  test_ims = read_images(get_test_image_paths())
 im_shape = train_ims[0].shape
 print(f'Read {len(train_ims)} training images and {len(test_ims)} testing images.')
 print(f'Each image has shape {im_shape}.')
@@ -72,7 +98,7 @@ print(f'Example model output: {train_Y[0]}')
 
 
 print('\n--- Building model...')
-model = build_model(im_shape, vocab_size, num_answers)
+model = build_model(im_shape, vocab_size, num_answers, args.big_model)
 checkpoint = ModelCheckpoint('model.h5', save_best_only=True)
 
 
