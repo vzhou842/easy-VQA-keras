@@ -1,7 +1,7 @@
 # easy-VQA-keras
 
-A Keras implementation of a simple VQA architecture, using the easy-VQA dataset.
-Methodolgy described in this [blog post](https://victorzhou.com/blog/easy-vqa).
+A Keras implementation of a simple VQA architecture, using the [easy-VQA](https://github.com/vzhou842/easy-VQA) dataset.
+Methodology described in this [blog post](https://victorzhou.com/blog/easy-vqa/).
 
 ## Usage
 
@@ -36,8 +36,7 @@ Optional arguments:
 As described, the `--big-model` flag trains a slightly larger model, that we
 used to train a 99.5% accuracy model used in the following [live demo](https://easy-vqa-demo.victorzhou.com/).
 
-Furthermore, instead of using the default easy-VQA dataset provided by the PyPi
-package, you can use your own custom-generated dataset using [this repo](https://github.com/vzhou842/easy-VQA).
+Furthermore, instead of using the official [easy-vqa package](https://pypi.org/project/easy-vqa/), you generate your own dataset using [the easy-VQA repo](https://github.com/vzhou842/easy-VQA) and use that instead.
 After following the instructions in that repo, just copy the `/data` folder into
 the root directory of this repository, so that your files look like this:
 
@@ -65,7 +64,7 @@ In addition to the training script, we have three other files:
   analyze model errors.
 - `model.py`, where the model architecture is specified
 - `prepare_data.py`, which reads and processes the data, either using the
-  `easy-VQA` PyPi package or a custom data directory
+  [easy-vqa package](https://pypi.org/project/easy-vqa/) or a custom data directory
 
 ## Results
 
