@@ -44,16 +44,16 @@ the root directory of this repository, so that your files look like this:
 ```shell
 easy-VQA-keras/
 ├── data/
-	├── answers.txt
-	├── test/
-	├── train/
+  ├── answers.txt
+  ├── test/
+  ├── train/
 ├── analyze.py
 ├── model.py
 ├── prepare_data.py
 └── train.py
 ```
 
-We personally used a custom dataset generated with double the images/questions
+For the 99.5% accuracy model, we personally used a custom dataset generated with double the images/questions
 as the official dataset (set `NUM_TRAIN` and `NUM_TEST` to 8000 and 2000,
 respectively, for the `easy-VQA` repo).
 
@@ -61,7 +61,7 @@ respectively, for the `easy-VQA` repo).
 
 In addition to the training script, we have three other files:
 - `analyze.py`, a script we used to debug our models. Run using a model weights
-  file, a produce statistics about model outputs and confusion matrices to
+  file, and produce statistics about model outputs and confusion matrices to
   analyze model errors.
 - `model.py`, where the model architecture is specified
 - `prepare_data.py`, which reads and processes the data, either using the
