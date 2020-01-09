@@ -1,4 +1,4 @@
-#easy-VQA-keras
+# easy-VQA-keras
 
 A Keras implementation of a simple Visual Question Answering (VQA) architecture, using the [easy-VQA](https://github.com/vzhou842/easy-VQA) dataset.
 
