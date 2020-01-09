@@ -1,7 +1,8 @@
 # easy-VQA-keras
 
-A Keras implementation of a simple VQA architecture, using the [easy-VQA](https://github.com/vzhou842/easy-VQA) dataset.
-Methodology described in this [blog post](https://victorzhou.com/blog/easy-vqa/).
+A Keras implementation of a simple Visual Question Answering (VQA) architecture, using the [easy-VQA](https://github.com/vzhou842/easy-VQA) dataset.
+
+Methodology described in the official [blog post](https://victorzhou.com/blog/easy-vqa/).
 
 ## Usage
 
@@ -52,7 +53,7 @@ easy-VQA-keras/
 └── train.py
 ```
 
-For the 99.5% accuracy model, we personally used a custom dataset generated with double the images/questions
+For the 99.5% accuracy model, we used a custom dataset generated with double the images/questions
 as the official dataset (set `NUM_TRAIN` and `NUM_TEST` to 8000 and 2000,
 respectively, for the `easy-VQA` repo).
 
@@ -65,7 +66,3 @@ In addition to the training script, we have three other files:
 - `model.py`, where the model architecture is specified
 - `prepare_data.py`, which reads and processes the data, either using the
   [easy-vqa package](https://pypi.org/project/easy-vqa/) or a custom data directory
-
-## Results
-
-TODO: when finalize parameters and details about the 99.5% accuracy model
