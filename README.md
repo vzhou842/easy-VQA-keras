@@ -1,4 +1,4 @@
-# easy-VQA-keras
+#easy-VQA-keras
 
 A Keras implementation of a simple VQA architecture, using the [easy-VQA](https://github.com/vzhou842/easy-VQA) dataset.
 Methodology described in this [blog post](https://victorzhou.com/blog/easy-vqa/).
@@ -21,6 +21,27 @@ To run the model,
 python train.py
 ```
 
+A typical run with should have results that look like this:
+```shell
+Epoch 1/8
+loss: 0.8887 - accuracy: 0.6480 - val_loss: 0.7504 - val_accuracy: 0.6838
+Epoch 2/8
+loss: 0.7443 - accuracy: 0.6864 - val_loss: 0.7118 - val_accuracy: 0.7095
+Epoch 3/8
+loss: 0.6419 - accuracy: 0.7468 - val_loss: 0.5659 - val_accuracy: 0.7780
+Epoch 4/8
+loss: 0.5140 - accuracy: 0.7981 - val_loss: 0.4720 - val_accuracy: 0.8138
+Epoch 5/8
+loss: 0.4155 - accuracy: 0.8320 - val_loss: 0.3938 - val_accuracy: 0.8392
+Epoch 6/8
+loss: 0.3078 - accuracy: 0.8775 - val_loss: 0.3139 - val_accuracy: 0.8762
+Epoch 7/8
+loss: 0.1982 - accuracy: 0.9286 - val_loss: 0.2202 - val_accuracy: 0.9212
+Epoch 8/8
+loss: 0.1157 - accuracy: 0.9627 - val_loss: 0.1883 - val_accuracy: 0.9378 
+```
+Read the "Training" section for how you might improve the accuracy of the model--we were able to get it ot 99.5% validation accuracy!.
+
 ### Training
 
 The training script `train.py` has two optional arguments:
@@ -33,7 +54,7 @@ Optional arguments:
   --use-data-dir  Use custom data directory, at /data
 ```
 
-As described, the `--big-model` flag trains a slightly larger model, that we
+The `--big-model` flag trains a slightly larger model, that we
 used to train a 99.5% accuracy model used in the following [live demo](https://easy-vqa-demo.victorzhou.com/).
 
 Furthermore, instead of using the official [easy-vqa package](https://pypi.org/project/easy-vqa/), you generate your own dataset using [the easy-VQA repo](https://github.com/vzhou842/easy-VQA) and use that instead.
@@ -65,7 +86,3 @@ In addition to the training script, we have three other files:
 - `model.py`, where the model architecture is specified
 - `prepare_data.py`, which reads and processes the data, either using the
   [easy-vqa package](https://pypi.org/project/easy-vqa/) or a custom data directory
-
-## Results
-
-TODO: when finalize parameters and details about the 99.5% accuracy model
