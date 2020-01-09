@@ -8,6 +8,7 @@ from easy_vqa import get_train_questions, get_test_questions, get_train_image_pa
 def setup(use_data_dir):
   print('\n--- Reading questions...')
   if use_data_dir:
+    # Read data from data/ folder
     def read_questions(path):
       with open(path, 'r') as file:
         qs = json.load(file)
@@ -18,6 +19,7 @@ def setup(use_data_dir):
     train_qs, train_answers, train_image_ids = read_questions('data/train/questions.json')
     test_qs, test_answers, test_image_ids = read_questions('data/test/questions.json')
   else:
+    # Use the easy-vqa package
     train_qs, train_answers, train_image_ids = get_train_questions()
     test_qs, test_answers, test_image_ids = get_test_questions()
   print(f'Read {len(train_qs)} training questions and {len(test_qs)} testing questions.')
@@ -25,9 +27,11 @@ def setup(use_data_dir):
 
   print('\n--- Reading answers...')
   if use_data_dir:
+    # Read answers from data/ folder
     with open('data/answers.txt', 'r') as file:
       all_answers = [a.strip() for a in file]
   else:
+    # Read answers from the easy-vqa package
     all_answers = get_answers()
   num_answers = len(all_answers)
   print(f'Found {num_answers} total answers:')
@@ -49,6 +53,7 @@ def setup(use_data_dir):
     return ims
 
   if use_data_dir:
+    # Read images from data/ folder
     def extract_paths(dir):
       paths = {}
       for filename in os.listdir(dir):
@@ -60,6 +65,7 @@ def setup(use_data_dir):
     train_ims = read_images(extract_paths('data/train/images'))
     test_ims  = read_images(extract_paths('data/test/images'))
   else:
+    # Read images from the easy-vqa package
     train_ims = read_images(get_train_image_paths())
     test_ims = read_images(get_test_image_paths())
   im_shape = train_ims[0].shape
