@@ -3,6 +3,7 @@ import numpy as np
 from model import build_model
 from prepare_data import setup
 
+# Support command-line options
 parser = argparse.ArgumentParser()
 parser.add_argument('--big-model', action='store_true')
 parser.add_argument('--model-weights', help='model weights file', default='model.h5')
@@ -19,14 +20,15 @@ model = build_model(im_shape, vocab_size, num_answers, args.big_model)
 model.load_weights(args.model_weights)
 predictions = model.predict([test_X_ims, test_X_seqs])
 
-# for idx in range(num_answers):
-# 	pred_values = predictions[:, idx]
-# 	answer = all_answers[idx]
-# 	print(f'\nStatistics for answer {idx}, answer {answer}')
-# 	min = np.amin(pred_values)
-# 	max = np.amax(pred_values)
-# 	mean = np.mean(pred_values)
-# 	print(f'\nMin: {min}, Max: {max}, Mean: {mean}')
+# Stats for each answer
+for idx in range(num_answers):
+	pred_values = predictions[:, idx]
+	answer = all_answers[idx]
+	print(f'\nStatistics for answer {idx}, {answer}')
+	min = np.amin(pred_values)
+	max = np.amax(pred_values)
+	mean = np.mean(pred_values)
+	print(f'Min: {min}, Max: {max}, Mean: {mean}')
 
 shapes = []
 yesno = []
