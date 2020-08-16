@@ -1,8 +1,9 @@
-from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.image import load_img, img_to_array
-from keras.utils import to_categorical
+from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.image import load_img, img_to_array
+from tensorflow.keras.utils import to_categorical
 import json
 import os
+import numpy as np
 from easy_vqa import get_train_questions, get_test_questions, get_train_image_paths, get_test_image_paths, get_answers
 
 def setup(use_data_dir):
@@ -90,8 +91,8 @@ def setup(use_data_dir):
 
 
   print('\n--- Creating model input images...')
-  train_X_ims = [train_ims[id] for id in train_image_ids]
-  test_X_ims = [test_ims[id] for id in test_image_ids]
+  train_X_ims = np.array([train_ims[id] for id in train_image_ids])
+  test_X_ims = np.array([test_ims[id] for id in test_image_ids])
 
 
   print('\n--- Creating model outputs...')
