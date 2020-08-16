@@ -2,7 +2,7 @@
 
 A Keras implementation of a simple Visual Question Answering (VQA) architecture, using the [easy-VQA](https://github.com/vzhou842/easy-VQA) dataset.
 
-Methodology described in the official [blog post](https://victorzhou.com/blog/easy-vqa/).
+Methodology described in the official [blog post](https://victorzhou.com/blog/easy-vqa/). See [easy-VQA featured on the official VQA site](https://visualqa.org/external.html)!
 
 ## Usage
 
